@@ -29,7 +29,7 @@
 
             <button type="submit">Search</button>
             <!-- for displaying error when api request fails -->
-            <p id="error-message" class="error-feedback hidden" aria-live="polite" role="status"></p>
+            <p id="error_message" class="error_feedback hidden" aria-live="polite" role="status"></p>
         </form>
     </div>
 
@@ -38,18 +38,18 @@
     <div id="live_feed">
         <h3>LIVE WEATHER STREAM</h3>
 
-        <div id="feed-output">Waiting for data...</div>
+        <div id="feed_output">Waiting for data...</div>
 
         <!-- Adding type="button" is also good practice so they never accidentally trigger form submissions if placed near forms. -->
-        <button id="start-feed" type="button">Start Feed</button>  
-        <button id="stop-feed" type="button">Stop Feed</button>
+        <button id="start_feed" type="button">Start Feed</button>  
+        <button id="stop_feed" type="button">Stop Feed</button>
 
     </div>
     <div id="modal" class="modal-backdrop hidden">
-        <div class="modal-contents">
-            <h3 id="modal-title">LOCATION DETAILS</h3>
-            <p id="modal-body">Detailed forecast data will appear here.</p>
-            <button id="close-modal" type="button">Close</button>
+        <div class="modal_contents">
+            <h3 id="modal_title">LOCATION DETAILS</h3>
+            <p id="modal_body">Detailed forecast data will appear here.</p>
+            <button id="close_modal" type="button">Close</button>
         </div>
     </div>
 </body>
