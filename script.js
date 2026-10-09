@@ -1,9 +1,7 @@
-class weatherApp{
+class WeatherApp{
     constructor(){
         this.form = document.querySelector('.location-form');
         this.inputArea = document.querySelector('.input-area');
-        // this.submitBtn = document.querySelector('')
-        // this.hiddenPara = document.querySelector('.error-feedback');
         this.errMessage = document.getElementById('error_message'); // faster and more readable
         this.card_container = document.getElementById('dynamic_cards');
         this.feed_container = document.getElementById('live_feed');
@@ -15,13 +13,55 @@ class weatherApp{
         this.modal_body = document.getElementById('modal_body');
         this.modal_close = document.getElementById('close_modal');
         this.modal_contents = document.getElementById('modal_contents');
+        this.country_Input = document.getElementById('country-input')
+        this.state_Input = document.getElementById('state-input')
+        this.district_Input = document.getElementById('district-input')
+        this.city_Input = document.getElementById('city-input')
 
-        // writing methods
-        handleFormSubmit(e){};
-        handleCardClick(e) {}
-        closeModal() {}
+        this.init();
 
+        //binding modal
+        this.closeModal = this.closeModal.bind(this);
+        this.handleCardClick = this.handleCardClick.bind(this);
+        // arrow function doesnt need bind
+        this.form.addEventListener('submit', this.handleFormSubmit);
+
+        
     }
+    
+
+
+        // writing methods using arrow function 
+    handleFormSubmit = async (e) => {
+        e.preventDefault();
+
+        this.clearError(); // clears previous error stage
+
+        // trim all values
+        const country = this.country_Input.value.trim();
+        const state = this.state_Input.value.trim();
+        const district = this.district_Input.value.trim();
+        const city = this.city_Input.value.trim();
+
+        if (!city) {
+            this.showError("City is required.");
+            return;
+        }
+        const locationQuery = [city, district, state, country]
+            .filter(Boolean)
+            .join(', ');
+
+        try {
+            const data = await this.fetchWeatherData(locationQuery);
+            this.renderWeatherCard(data);
+            this.city_Input.value = ''; // Reset input after success
+        } catch (err) {
+            this.showError(err.message || "Failed to fetch weather data.");
+        }
+    };
+    handleCardClick = (e) => {}
+    closeModal() {}
+
 }
 document.addEventListener('DOMContentLoaded', () => {
   new WeatherApp();
