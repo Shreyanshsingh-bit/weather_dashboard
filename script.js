@@ -19,18 +19,15 @@ class WeatherApp{
         this.city_Input = document.getElementById('city-input')
 
         this.init();
-
+    }
+    init(){
         //binding modal
         this.closeModal = this.closeModal.bind(this);
         this.handleCardClick = this.handleCardClick.bind(this);
         // arrow function doesnt need bind
         this.form.addEventListener('submit', this.handleFormSubmit);
-
-        
     }
     
-
-
         // writing methods using arrow function 
     handleFormSubmit = async (e) => {
         e.preventDefault();
