@@ -23,9 +23,11 @@ class WeatherApp{
     init(){
         //binding modal
         this.closeModal = this.closeModal.bind(this);
-        this.handleCardClick = this.handleCardClick.bind(this);
+        // this.handleCardClick = this.handleCardClick.bind(this);
         // arrow function doesnt need bind
         this.form.addEventListener('submit', this.handleFormSubmit);
+        this.card_container.addEventListener('click', this.handleCardClick)
+
     }
     
         // writing methods using arrow function 
@@ -50,14 +52,29 @@ class WeatherApp{
 
         try {
             const data = await this.fetchWeatherData(locationQuery);
-            this.renderWeatherCard(data);
+            this.renderWeatherCard(data); // add something
             this.city_Input.value = ''; // Reset input after success
         } catch (err) {
             this.showError(err.message || "Failed to fetch weather data.");
         }
     };
-    handleCardClick = (e) => {}
+    handleCardClick = (e) => {
+
+    }
     closeModal() {}
+    renderWeatherCard (data) { 
+        // adding html
+        const cardHTML = `
+            <div class = "weather-card" data-city="${data.city}">
+                <h3>${data.city}</h3>
+                </-- Added buttons> --/>
+                <button type="button" class="details-btn">View Details</button>
+                <button type="button" class="color-btn">Change Color</button>
+                <button type="button" class="delete-btn">Delete</button>
+            </div>
+        `;
+        this.card_container.insertAdjacentHTML('beforeend', cardHTML); // inserts directly at the bottom of dynamic-card div
+    }
 
 }
 document.addEventListener('DOMContentLoaded', () => {
