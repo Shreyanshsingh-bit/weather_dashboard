@@ -23,7 +23,7 @@ class WeatherApp{
     init(){
         //binding modal
         this.closeModal = this.closeModal.bind(this);
-        // this.handleCardClick = this.handleCardClick.bind(this);
+        this.handleCardClick = this.handleCardClick.bind; // no need to bind contains arrow fn
         // arrow function doesnt need bind
         this.form.addEventListener('submit', this.handleFormSubmit);
         this.card_container.addEventListener('click', this.handleCardClick)
@@ -59,8 +59,23 @@ class WeatherApp{
         }
     };
     handleCardClick = (e) => {
+        const card = e.target.closest('weather-card');
+        if(!card) return;
 
-    }
+
+        if(e.target.classList.contains('details-btn')){
+            const city = card.dataset.city;
+            this.modal_title.textContent = `${city}
+                WEATHER DETAILS
+            `;
+        }
+        if(e.target.classList.contains('color-btn')){
+            card.style.backgroundColor = '#a2d3f9';
+        }
+        if(e.target.classList.contains('delete-btn')){
+            card.remove();
+        }
+    };
     closeModal() {}
     renderWeatherCard (data) { 
         // adding html
