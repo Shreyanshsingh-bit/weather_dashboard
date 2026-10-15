@@ -23,10 +23,15 @@ class WeatherApp{
     init(){
         //binding modal
         this.closeModal = this.closeModal.bind(this);
-        this.handleCardClick = this.handleCardClick; // no need to bind contains arrow fn
+        // this.handleCardClick = this.handleCardClick; // no need to bind contains arrow fn
         // arrow function doesnt need bind
         this.form.addEventListener('submit', this.handleFormSubmit);
         this.card_container.addEventListener('click', this.handleCardClick)
+
+        // modal_close listener
+        if(this.modal_close){
+            this.modal_close.addEventListener('click', this.closeModal);
+        }
 
     }
     
@@ -53,13 +58,14 @@ class WeatherApp{
         try {
             const data = await this.fetchWeatherData(locationQuery);
             this.renderWeatherCard(data); // add something
-            this.city_Input.value = ''; // Reset input after success
+            // this.city_Input.value = ''; // Reset input after success
+            this.form.reset(); // clean all inputs
         } catch (err) {
             this.showError(err.message || "Failed to fetch weather data.");
         }
     };
     handleCardClick = (e) => {
-        const card = e.target.closest('weather-card');
+        const card = e.target.closest('.weather-card');
         if(!card) return;
 
 
@@ -70,6 +76,7 @@ class WeatherApp{
                 WEATHER DETAILS
                 `;
             this.modal_body.textContent = `${temp}`;
+            this.modal.classList.remove('hidden');
         }
         if(e.target.classList.contains('color-btn')){
             card.style.backgroundColor = '#a2d3f9';
@@ -98,12 +105,9 @@ class WeatherApp{
         this.card_container.insertAdjacentHTML('beforeend', cardHTML); // inserts directly at the bottom of dynamic-card div
     }
 
-    // using fake fetch to check for code running
+    
     async fetchWeatherData(locationquery){
-        return{
-            city : locationquery,
-            temp : 24
-        };
+        
     }
     showError(msg){
         if(this.errMessage) this.errMessage.textContent = msg;
