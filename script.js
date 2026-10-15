@@ -23,7 +23,7 @@ class WeatherApp{
     init(){
         //binding modal
         this.closeModal = this.closeModal.bind(this);
-        this.handleCardClick = this.handleCardClick.bind; // no need to bind contains arrow fn
+        this.handleCardClick = this.handleCardClick; // no need to bind contains arrow fn
         // arrow function doesnt need bind
         this.form.addEventListener('submit', this.handleFormSubmit);
         this.card_container.addEventListener('click', this.handleCardClick)
@@ -65,9 +65,11 @@ class WeatherApp{
 
         if(e.target.classList.contains('details-btn')){
             const city = card.dataset.city;
+            const temp = card.dataset.temp;
             this.modal_title.textContent = `${city}
                 WEATHER DETAILS
-            `;
+                `;
+            this.modal_body.textContent = `${temp}`;
         }
         if(e.target.classList.contains('color-btn')){
             card.style.backgroundColor = '#a2d3f9';
@@ -76,12 +78,17 @@ class WeatherApp{
             card.remove();
         }
     };
-    closeModal() {}
+    closeModal() {
+        if(this.modal){
+            this.modal.classList.add('hidden');
+        }
+    }
     renderWeatherCard (data) { 
         // adding html
         const cardHTML = `
-            <div class = "weather-card" data-city="${data.city}">
+            <div class = "weather-card" data-city="${data.city}" data-temp="${data.temp}">
                 <h3>${data.city}</h3>
+                <p class = "temp">${data.temp} deg C</p>
                 </-- Added buttons> --/>
                 <button type="button" class="details-btn">View Details</button>
                 <button type="button" class="color-btn">Change Color</button>
@@ -91,6 +98,20 @@ class WeatherApp{
         this.card_container.insertAdjacentHTML('beforeend', cardHTML); // inserts directly at the bottom of dynamic-card div
     }
 
+    // using fake fetch to check for code running
+    async fetchWeatherData(locationquery){
+        return{
+            city : locationquery,
+            temp : 24
+        };
+    }
+    showError(msg){
+        if(this.errMessage) this.errMessage.textContent = msg;
+        else console.log(msg);
+    }
+    clearError(){
+        if(this.errMessage) this.errMessage.textContent = '';
+    }
 }
 document.addEventListener('DOMContentLoaded', () => {
   new WeatherApp();
