@@ -107,7 +107,50 @@ class WeatherApp{
 
     
     async fetchWeatherData(locationquery){
+        const encodeQuery = encodeURIComponent(locationquery);
+        const count = 1;
+        const language = 'en';
+        const baseURL = 'https://geocoding-api.open-meteo.com/v1/search';
+        const format = 'json';
+        const geoCodedUrl = `${baseURL}?name=${encodeQuery}&count=${count}&language=${language}&format=${format}`; // there is modern standard too
+        const response = await fetch(geoCodedUrl);
+
+        // HTTP VALIDATION CHECK
+
+        if(!response.ok){
+            throw new Error(`Response Status : ${response.status}`);
+        }
+        const result = await response.json(); // we used await bcoz it takes time to change into json, js should not break 
+
+        if(!result.results || result.results.length === 0){ // here results contains the array return by open-meteo
+            throw new Error('the location was not found');
+        }
+        const {latitude, longitude, name, country} = result.results[0]; // extracting info 
+
+        // building weather forecast request
+
+        const timezone = "auto";
+        // const currTemp = "temp";
+        const baseReqURL = "https://api.open-meteo.com/v1/forecast";
+
+        const reqURL = `${baseReqURL}?latitude=${latitude}&longitude=${longitude}&current=temperature_2m&timezone=${timezone}`;
+        const reqResponse = await fetch(reqURL);
+
+        // validating reqResponse
+        if(!reqResponse.ok){
+            throw new Error(`Response Status for reqResponse : ${reqResponse.status}`);
+        }
+        const reqResult = await reqResponse.json();
+        if(!reqResult.current){ // it sends current
+            throw new Error('the reqResponse is empty');
+        }
+
+        // returning the city and temp
         
+        return {
+            city : `${name} ${country ? `, ${country}` : ''}`,
+            temp : reqResult.current.temperature_2m
+        };
     }
     showError(msg){
         if(this.errMessage) this.errMessage.textContent = msg;
