@@ -5,7 +5,7 @@ class WeatherApp{
         this.errMessage = document.getElementById('error_message'); // faster and more readable
         this.card_container = document.getElementById('dynamic_cards');
         this.feed_container = document.getElementById('live_feed');
-        this.feed_op = document.getElementById('feed_output');
+        this.feed_out = document.getElementById('feed_output');
         this.feed_start = document.getElementById('start_feed');
         this.feed_stop = document.getElementById('stop_feed');
         this.modal = document.getElementById('modal');
@@ -18,7 +18,8 @@ class WeatherApp{
         this.district_Input = document.getElementById('district-input');
         this.city_Input = document.getElementById('city-input');
         this.submitBtn = this.form.querySelector('button[type="submit"]');
-
+        this.feedInterval = null;
+        // this.currentCity = null;
 
         this.init();
     }
@@ -29,6 +30,7 @@ class WeatherApp{
         // arrow function doesnt need bind
         this.form.addEventListener('submit', this.handleFormSubmit);
         this.card_container.addEventListener('click', this.handleCardClick)
+        this.feed_start.addEventListener('click', this.handleStartFeed);
 
         // modal_close listener
         if(this.modal_close){
@@ -61,6 +63,7 @@ class WeatherApp{
             this.setLoading(true)
             const data = await this.fetchWeatherData(locationQuery);
             this.renderWeatherCard(data); 
+            this.currentCity = locationQuery;
             this.form.reset(); // clean all inputs
         } catch (err) {
             this.showError(err.message || "Failed to fetch weather data.");
@@ -120,7 +123,6 @@ class WeatherApp{
         this.card_container.insertAdjacentHTML('beforeend', cardHTML); // inserts directly at the bottom of dynamic-card div
     }
 
-    
     async fetchWeatherData(locationquery){
         const encodeQuery = encodeURIComponent(locationquery);
         const count = 1;
@@ -174,6 +176,42 @@ class WeatherApp{
     }
     clearError(){
         if(this.errMessage) this.errMessage.textContent = '';
+    }
+
+    handleStartFeed = async(e) => {
+        e.preventDefault();
+        
+        const city = this.city_Input.value.trim() || this.currentCity;
+        // console.log(`'city' : ${city}`) for checking input
+        if(!city){
+            this.showError("Enter a city to start live feed!")
+            return;
+        }
+        if(this.feedInterval){
+            clearTimeout(this.feedInterval);
+            this.feedInterval = null;
+        }
+
+        this.feed_out.textContent = "Connecting to live stream...";
+
+        const updateFeed = async() => {
+            try {
+                const data = await this.fetchWeatherData(city);
+                // console.log(data) // test to check object 
+                const timestamp = new Date().toLocaleTimeString();
+                // console.log(timestamp) // for test
+                this.feed_out.innerHTML = `<strong>[${timestamp}]</strong> ${data.city} : ${data.temp}`;
+            }
+            catch(err){
+                this.feed_out.textContent = `Feed Error : err.message`;
+            }
+            
+            this.feedInterval = setTimeout(updateFeed, 30000);
+        };
+        await updateFeed();
+        // console.log('updated feed') test to check for destination of flow
+
+
     }
 }
 document.addEventListener('DOMContentLoaded', () => {
