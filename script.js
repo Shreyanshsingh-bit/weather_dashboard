@@ -14,16 +14,18 @@ class WeatherApp{
         this.modal_close = document.getElementById('close_modal');
         this.modal_contents = document.getElementById('modal_contents');
         this.country_Input = document.getElementById('country-input')
-        this.state_Input = document.getElementById('state-input')
-        this.district_Input = document.getElementById('district-input')
-        this.city_Input = document.getElementById('city-input')
+        this.state_Input = document.getElementById('state-input');
+        this.district_Input = document.getElementById('district-input');
+        this.city_Input = document.getElementById('city-input');
+        this.submitBtn = this.form.querySelector('button[type="submit"]');
+
 
         this.init();
     }
     init(){
         //binding modal
         this.closeModal = this.closeModal.bind(this);
-        // this.handleCardClick = this.handleCardClick; // no need to bind contains arrow fn
+    
         // arrow function doesnt need bind
         this.form.addEventListener('submit', this.handleFormSubmit);
         this.card_container.addEventListener('click', this.handleCardClick)
@@ -51,19 +53,32 @@ class WeatherApp{
             this.showError("City is required.");
             return;
         }
-        const locationQuery = [city, district, state, country]
-            .filter(Boolean)
-            .join(', ');
-
+        // due to open_meteo api can hold atmost one comma
+        const qualifier = state || country || district;
+        const locationQuery = qualifier ? `${city}, ${qualifier}` : city;
+        
         try {
+            this.setLoading(true)
             const data = await this.fetchWeatherData(locationQuery);
-            this.renderWeatherCard(data); // add something
-            // this.city_Input.value = ''; // Reset input after success
+            this.renderWeatherCard(data); 
             this.form.reset(); // clean all inputs
         } catch (err) {
             this.showError(err.message || "Failed to fetch weather data.");
+        } finally {
+            this.setLoading(false);
         }
     };
+    setLoading(isLoading){
+        if(!this.submitBtn) return;
+        if(isLoading) {
+            this.submitBtn.disabled = true;
+            this.submitBtn.innerHTML = `<span class="spinner"></span> Loading...`;
+        }
+        else {
+            this.submitBtn.disabled = false;
+            this.submitBtn.innerHTML = `Get Weather`;
+        }
+    }
     handleCardClick = (e) => {
         const card = e.target.closest('.weather-card');
         if(!card) return;
@@ -134,6 +149,7 @@ class WeatherApp{
         const baseReqURL = "https://api.open-meteo.com/v1/forecast";
 
         const reqURL = `${baseReqURL}?latitude=${latitude}&longitude=${longitude}&current=temperature_2m&timezone=${timezone}`;
+        // console.log("Forecast URL:", reqURL); // used to test whether the api is fetched or not
         const reqResponse = await fetch(reqURL);
 
         // validating reqResponse
