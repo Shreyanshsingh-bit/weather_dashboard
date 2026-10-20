@@ -19,7 +19,6 @@ class WeatherApp{
         this.city_Input = document.getElementById('city-input');
         this.submitBtn = this.form.querySelector('button[type="submit"]');
         this.feedInterval = null;
-        // this.currentCity = null;
 
         this.init();
     }
@@ -29,8 +28,10 @@ class WeatherApp{
     
         // arrow function doesnt need bind
         this.form.addEventListener('submit', this.handleFormSubmit);
-        this.card_container.addEventListener('click', this.handleCardClick)
+        this.card_container.addEventListener('click', this.handleCardClick);
         this.feed_start.addEventListener('click', this.handleStartFeed);
+        this.feed_stop.addEventListener('click', this.handleStopFeed);
+        if(this.feed_stop) this.feed_stop.disabled = true; // stop button will not work until start is pressed
 
         // modal_close listener
         if(this.modal_close){
@@ -63,7 +64,7 @@ class WeatherApp{
             this.setLoading(true)
             const data = await this.fetchWeatherData(locationQuery);
             this.renderWeatherCard(data); 
-            this.currentCity = locationQuery;
+            this.currentCity = locationQuery; // for feed
             this.form.reset(); // clean all inputs
         } catch (err) {
             this.showError(err.message || "Failed to fetch weather data.");
@@ -163,8 +164,6 @@ class WeatherApp{
             throw new Error('the reqResponse is empty');
         }
 
-        // returning the city and temp
-        
         return {
             city : `${name} ${country ? `, ${country}` : ''}`,
             temp : reqResult.current.temperature_2m
@@ -182,24 +181,24 @@ class WeatherApp{
         e.preventDefault();
         
         const city = this.city_Input.value.trim() || this.currentCity;
-        // console.log(`'city' : ${city}`) for checking input
         if(!city){
             this.showError("Enter a city to start live feed!")
             return;
         }
         if(this.feedInterval){
-            clearTimeout(this.feedInterval);
+            clearTimeout(this.feedInterval); // clear if there exists a timer
             this.feedInterval = null;
         }
+        // handling buttons
+        if (this.feed_start) this.feed_start.disabled = true;  // Block repeated clicks
+        if (this.feed_stop) this.feed_stop.disabled = false;
 
         this.feed_out.textContent = "Connecting to live stream...";
 
         const updateFeed = async() => {
             try {
                 const data = await this.fetchWeatherData(city);
-                // console.log(data) // test to check object 
                 const timestamp = new Date().toLocaleTimeString();
-                // console.log(timestamp) // for test
                 this.feed_out.innerHTML = `<strong>[${timestamp}]</strong> ${data.city} : ${data.temp}`;
             }
             catch(err){
@@ -209,8 +208,19 @@ class WeatherApp{
             this.feedInterval = setTimeout(updateFeed, 30000);
         };
         await updateFeed();
-        // console.log('updated feed') test to check for destination of flow
-
+    }
+    // stop feed
+    handleStopFeed = async(e) => {
+        if(this.feedInterval){
+            clearTimeout(this.feedInterval); // built in and use timeout for timeout, same for interval
+            this.feedInterval = null;
+        }
+        if(this.feed_out){
+            this.feed_out.innerHTML += `<span style="color : grey;">Live Stream Ended<span>`; // Appending it does not erase the result
+        }
+        // handling buttons
+        if (this.feed_start) this.feed_start.disabled = false;
+        if (this.feed_stop) this.feed_stop.disabled = true;
 
     }
 }
