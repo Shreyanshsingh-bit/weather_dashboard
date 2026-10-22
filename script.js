@@ -12,7 +12,7 @@ class WeatherApp{
         this.modal_title = document.getElementById('modal_title');
         this.modal_body = document.getElementById('modal_body');
         this.modal_close = document.getElementById('close_modal');
-        this.modal_contents = document.getElementById('modal_contents');
+        // this.modal_contents = document.getElementById('modal_contents');
         this.country_Input = document.getElementById('country-input')
         this.state_Input = document.getElementById('state-input');
         this.district_Input = document.getElementById('district-input');
@@ -37,6 +37,22 @@ class WeatherApp{
         if(this.modal_close){
             this.modal_close.addEventListener('click', this.closeModal);
         }
+        // Backdrop
+        if (this.modal) {
+            this.modal.addEventListener("click", (e) => {
+                console.log('Clicked element:', e.target);
+                console.log('Is backdrop?', e.target === this.modal);
+                if (e.target === this.modal) {
+                    this.closeModal();
+                }
+            });
+        }
+        // escape key
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && !this.modal.classList.contains("hidden")) {
+                this.closeModal();
+            }
+        });
     }
     
         // writing methods using arrow function 
@@ -109,7 +125,7 @@ class WeatherApp{
         const timestamp = new Date().toLocaleTimeString();
         this.modal_title.textContent = data.city;
         const weatherData = `
-            <div class="modal_content" data-temp="${data.temp}">
+            <div class="modal-weather-details" data-temp="${data.temp}">
                 <p class ="content"> In ${data.city}, the temperature feels like ${data.temp}°C</p>
                 <p>Currently time is ${timestamp}</p>
             </div>
