@@ -1,3 +1,34 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: cyan;
+  color: #0f172a;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.5;
+  /* -webkit-font-smoothing: antialiased; */
+}
+.container {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+
+
+
 /* adding a spinner which runs when user submit the loaction */
 /* Spinner Ring */
 .spinner {
@@ -19,7 +50,3 @@
   }
 }
 
-/* Hidden Utility */
-.hidden {
-  display: none !important;
-}
