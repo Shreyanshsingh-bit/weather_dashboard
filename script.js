@@ -37,7 +37,6 @@ class WeatherApp{
         if(this.modal_close){
             this.modal_close.addEventListener('click', this.closeModal);
         }
-
     }
     
         // writing methods using arrow function 
@@ -91,11 +90,7 @@ class WeatherApp{
         if(e.target.classList.contains('details-btn')){
             const city = card.dataset.city;
             const temp = card.dataset.temp;
-            this.modal_title.textContent = `${city}
-                WEATHER DETAILS
-                `;
-            this.modal_body.textContent = `${temp}`;
-            this.modal.classList.remove('hidden');
+            this.openModal({ city, temp }); // reusable
         }
         if(e.target.classList.contains('color-btn')){
             card.style.backgroundColor = '#a2d3f9';
@@ -104,11 +99,36 @@ class WeatherApp{
             card.remove();
         }
     };
+
+    // for MODAL
+    openModal(data) {
+        if(!data) {
+            this.showError('Data is not fetched properly.');
+            return;
+        }
+        const timestamp = new Date().toLocaleTimeString();
+        this.modal_title.textContent = data.city;
+        const weatherData = `
+            <div class="modal_content" data-temp="${data.temp}">
+                <p class ="content"> In ${data.city}, the temperature feels like ${data.temp}°C</p>
+                <p>Currently time is ${timestamp}</p>
+            </div>
+        `;
+        this.modal_body.innerHTML = weatherData;
+        this.modal.classList.remove('hidden');
+    }
+
     closeModal() {
         if(this.modal){
             this.modal.classList.add('hidden');
         }
+        document.body.style.overflow = "";
+        if(this.modal_body) {
+            this.modal_body.innerHTML = "";
+        }
+        this.handleStopFeed();
     }
+
     renderWeatherCard (data) { 
         // adding html
         const cardHTML = `
