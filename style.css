@@ -25,6 +25,40 @@ body {
   flex-direction: column;
   gap: 1.5rem;
 }
+header {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+header h1{
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: #0f172a;
+}
+.location-form {
+  display: flex;
+  gap : 0.5rem;
+  background-color: #ffffff;
+  padding: 0.5rem;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+.location-form input[type="text"] {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 1rem;
+  outline: none;
+  background-color: #f1f5f9;
+  color: #0f172a;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.location-form input[type="text"]:focus {
+  background-color: #ffffff;
+  border-color: #2563eb;
+}
+
 
 
 
