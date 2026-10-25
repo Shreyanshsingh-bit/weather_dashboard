@@ -38,13 +38,19 @@ header h1{
 .location-form {
   display: flex;
   gap : 0.5rem;
+  flex-direction: column;
   background-color: #ffffff;
-  padding: 0.5rem;
+  padding: 1.5rem;
   border-radius: 10px;
   border: 1px solid #e2e8f0;
+  width: 100%;
 }
+.input-area{
+  width: 100%;
+}
+
 .location-form input[type="text"] {
-  flex: 1;
+  width: 100%;
   padding: 0.75rem 1rem;
   border: 1px solid transparent;
   border-radius: 6px;
@@ -54,14 +60,66 @@ header h1{
   color: #0f172a;
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
+.location-form input[type="text"]::placeholder {
+  color: #64748b;
+}
+.location-form button[type="submit"] {
+  width: auto;                 
+  align-self: center;           
+  padding: 0.6rem 1.5rem;       
+  background-color: #f8f9fa;    
+  color: #3c4043;               
+  border: 1px solid #dadce0;    
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+
+.location-form button[type="submit"]:hover:not(:disabled) {
+  background-color: #f1f3f4;
+  border-color: #dadce0;
+  color: #202124;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
 .location-form input[type="text"]:focus {
   background-color: #ffffff;
   border-color: #2563eb;
 }
-
-
-
-
+.error_feedback {
+  align-self: center;               /* Keeps it centered under the Google-style button */
+  display: flex;
+  align-items: center;
+  color: #d93025;
+  background-color: #fce8e6;
+  border: 1px solid #fad2cf;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  text-align: center;
+  margin-top: 0.25rem;
+}
+.feed-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: var(--card-bg);
+  padding: 1.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  width: 100%;
+}
+#live_feed {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
 
 /* adding a spinner which runs when user submit the loaction */
 /* Spinner Ring */
